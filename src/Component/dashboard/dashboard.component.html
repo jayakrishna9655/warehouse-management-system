@@ -1,0 +1,43 @@
+<div class="container mt-4">
+    <h2>Warehouse Inventory</h2>
+    
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary" (click)="openCreateModal()">+ Add New Product</button>
+        <input type="text" class="form-control w-25" placeholder="Search SKU..." [(ngModel)]="searchTerm">
+    </div>
+
+    <table class="table table-bordered shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of products">
+                <td>{{p.sku}}</td>
+                <td>{{p.name}}</td>
+                <td>
+                    <span [class]="p.quantity < 5 ? 'text-danger fw-bold' : ''">{{p.quantity}}</span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-info" (click)="viewDetails(p)">View</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-overlay" *ngIf="selectedProduct">
+    <div class="custom-modal">
+        <h3>Product Details</h3>
+        <hr>
+        <p><strong>SKU:</strong> {{selectedProduct.sku}}</p>
+        <p><strong>Name:</strong> {{selectedProduct.name}}</p>
+        <p><strong>Category:</strong> {{selectedProduct.category}}</p>
+        <p><strong>Price:</strong> ${{selectedProduct.price}}</p>
+        <button class="btn btn-secondary" (click)="selectedProduct = null">Close</button>
+    </div>
+</div>
