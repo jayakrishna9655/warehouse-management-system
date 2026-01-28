@@ -2,10 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '/Credo System/JavaProject/Warehouse_ans/WareHouse/src/models/user';
+import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule],
+  imports: [FormsModule,RouterOutlet],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -13,7 +15,7 @@ export class LoginComponent {
 name:any;
 email:any
 Password:any
-constructor(private http: HttpClient) {}
+constructor(private http: HttpClient , private router:Router) {}
 user: User = {
     username: '',
     password: '',
@@ -32,6 +34,7 @@ getdata(){
       alert("Login Successful!");
       console.log("user",this.user)
       console.log("res",res)
+      this.router.navigate(['/dashboard']);
   },
   error: (err) => {
     alert("Invalid Username or Password");

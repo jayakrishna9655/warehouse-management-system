@@ -2,18 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
-   imports: [FormsModule,CommonModule],
+   imports: [FormsModule,CommonModule,RouterOutlet],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
 products: any[] = [];
-  selectedProduct: any = null; // Holds the product for the "View" popup
+  selectedProduct: any = null; 
   searchTerm: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router:Router) {}
 
   ngOnInit() {
     this.loadProducts();
@@ -26,10 +28,10 @@ products: any[] = [];
   }
 
   viewDetails(product: any) {
-    this.selectedProduct = product; // This triggers the popup
+    this.router.navigate(['/dashboard-detail', product.id]);
   }
 
   openCreateModal() {
-    // Logic to open a create form (similar to View)
+    this.router.navigate(['/dashboard-detail']);
   }
 }

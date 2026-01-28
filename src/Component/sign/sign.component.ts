@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-sign',
-  imports: [FormsModule],
+  imports: [FormsModule,RouterOutlet,RouterLink],
   templateUrl: './sign.component.html',
   styleUrl: './sign.component.css'
 })
