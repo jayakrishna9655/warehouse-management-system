@@ -46,3 +46,10 @@ target/
 dist/
 .idea/
 .vscode/
+
+# Java/Backend specific
+Backend/target/
+Backend/*.log
+Backend/.settings/
+Backend/.classpath
+Backend/.project
