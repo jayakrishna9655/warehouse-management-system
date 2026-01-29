@@ -16,8 +16,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+ // Inside User.java
     @Column(nullable = false)
-    private String role;
+    private String role = "USER"; // Default every new user to 'USER'
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     // Getters and setters (or Lombok)
     public Long getId() {
@@ -44,11 +48,5 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+ 
 }

@@ -24,6 +24,7 @@
                 </td>
                 <td>
                     <button class="btn btn-sm btn-info" (click)="viewDetails(p)">View</button>
+                    <button *ngIf="isAdmin" class="btn btn-danger" (click)="deleteProduct(p.id)">Delete</button>
                 </td>
             </tr>
         </tbody>

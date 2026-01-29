@@ -8,6 +8,7 @@ public class UserResponse {
     public UserResponse(Long id, String username,String role) {
         this.setId(id);
         this.setUsername(username);
+        this.setRole(role);
     }
 
 	public String getUsername() {

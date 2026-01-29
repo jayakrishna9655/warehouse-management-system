@@ -1,4 +1,5 @@
 package com.example.warehouse.service;
+
 import com.example.warehouse.entity.User;
 import com.example.warehouse.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,20 +7,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
-	@Autowired
+public class UserServiceImpl implements UserService {
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public User saveUser(User user) {
         // 1. Encrypt the password before saving
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         
-        // 2. Set a default role
-        user.setRole("ROLE_USER");
+        // 2. Dynamic Role Assignment
+        // If the controller passed a role (like ADMIN), we keep it.
+        // If it's empty or null, we default to ROLE_USER.
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
         
         // 3. Save to database
         return userRepository.save(user);

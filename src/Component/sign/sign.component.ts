@@ -11,13 +11,14 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 })
 export class SignComponent {
 name:any;
-email:any
-Password:any
+role:any='USER';
+Password:any;
 constructor(private http: HttpClient) {}
 getdata(){
   var payload={
     username:this.name,
-   password:this.Password
+   password:this.Password,
+   role:this.role
   }
   console.log("payload",payload)
  let url = "http://localhost:8080/api/users/register";

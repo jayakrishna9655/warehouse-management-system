@@ -34,6 +34,8 @@ getdata(){
       alert("Login Successful!");
       console.log("user",this.user)
       console.log("res",res)
+      localStorage.setItem('userRole', res.role); 
+    localStorage.setItem('userId', res.id);
       this.router.navigate(['/dashboard']);
   },
   error: (err) => {
