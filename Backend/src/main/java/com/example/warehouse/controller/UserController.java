@@ -42,7 +42,8 @@ public class UserController {
         UserResponse response = new UserResponse(
             savedUser.getId(), 
             savedUser.getUsername(), 
-            savedUser.getRole()
+            savedUser.getRole(),
+            null
         );
 
         return ResponseEntity.ok(response);
@@ -57,7 +58,8 @@ public class UserController {
         UserResponse response = new UserResponse(
             user.getId(), 
             user.getUsername(), 
-            user.getRole()
+            user.getRole(),
+            user.getSessionToken()
         );
 
         return ResponseEntity.ok(response);

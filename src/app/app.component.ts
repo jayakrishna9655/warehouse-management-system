@@ -17,7 +17,7 @@ export class AppComponent {
   // Clear all session data
   localStorage.removeItem('userRole');
   localStorage.removeItem('userId');
-  localStorage.removeItem('userName');
+  localStorage.removeItem('username');
   
   // Redirect to login page
   this.router.navigate(['/login']);

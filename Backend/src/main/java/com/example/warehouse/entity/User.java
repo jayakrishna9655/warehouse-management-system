@@ -16,6 +16,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable=true)
+    private String sessionToken;
+    
  // Inside User.java
     @Column(nullable = false)
     private String role = "USER"; // Default every new user to 'USER'
@@ -38,6 +41,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    
+    public String getSessionToken() { 
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) { 
+        this.sessionToken = sessionToken;
     }
 
     public String getPassword() {

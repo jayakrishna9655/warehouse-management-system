@@ -40,7 +40,10 @@ public class UserServiceImpl implements UserService {
 
         // 2. Check if password matches
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+        	// Generate a fresh token for this login session
+            String newSessionToken = java.util.UUID.randomUUID().toString();
+            user.setSessionToken(newSessionToken);
+            return userRepository.save(user);
         } else {
             throw new RuntimeException("Invalid Password!");
         }
