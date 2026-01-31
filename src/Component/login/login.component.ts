@@ -28,6 +28,7 @@ export class LoginComponent {
 
     this.http.post(url, this.user).subscribe({
       next: (res: any) => {
+        localStorage.clear();
         localStorage.setItem('userRole', res.role);
         localStorage.setItem('username', res.username);
         localStorage.setItem('userId', res.id.toString());

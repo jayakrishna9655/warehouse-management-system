@@ -41,28 +41,26 @@ export class DashboardDetailComponent implements OnInit {
   }
 
 saveProduct() {
-    const user = localStorage.getItem('username');
-    const token = localStorage.getItem('sessionToken');
+  // CLEAN URL: No more ?username= or &sessionToken=
+  const url = this.newProduct.id 
+    ? `http://localhost:8080/api/products/update/${this.newProduct.id}` 
+    : `http://localhost:8080/api/products/create`;
 
-    const url = this.newProduct.id 
-      ? `http://localhost:8080/api/products/update/${this.newProduct.id}?username=${user}&sessionToken=${token}` 
-      : `http://localhost:8080/api/products/create?username=${user}&sessionToken=${token}`;
-
-    this.http.post(url, this.newProduct).subscribe({
-      next: (res) => {
-        alert("Product Saved Successfully!");
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        if(err.status === 401) {
-          alert("Session Expired! Please login again.");
-          this.router.navigate(['/login']);
-        } else {
-          alert("Error saving product.");
-        }
+  // The Interceptor will handle the security parameters automatically!
+  this.http.post(url, this.newProduct).subscribe({
+    next: (res) => {
+      alert("Product Saved Successfully!");
+      this.router.navigate(['/dashboard']);
+    },
+    error: (err) => {
+      // The Interceptor handles 401 (Session Invalid) alerts globally now,
+      // so you don't even need to alert here if it's a 401.
+      if(err.status !== 401) {
+        alert("Error saving product.");
       }
-    });
-  }
+    }
+  });
+}
 
   goBack() {
     this.router.navigate(['/dashboard']);

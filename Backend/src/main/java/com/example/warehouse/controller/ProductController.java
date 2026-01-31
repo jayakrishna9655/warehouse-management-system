@@ -1,6 +1,5 @@
 package com.example.warehouse.controller;
 
-import java.util.List;
 import com.example.warehouse.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.warehouse.entity.Product;
 import com.example.warehouse.entity.User;
 import com.example.warehouse.repository.ProductRepository;
+import org.springframework.http.CacheControl;
 @RestController
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -29,10 +29,15 @@ public class ProductController {
     @Autowired
     private UserRepository userRepository;
 
-    // Helper method to keep code clean
     private boolean isSessionInvalid(String username, String sessionToken) {
         User user = userRepository.findByUsername(username).orElse(null);
-        return user == null || !sessionToken.equals(user.getSessionToken());
+        if (user == null) return true;
+
+        // ADD THESE TWO LINES TO DEBUG:
+        System.out.println("Comparing Tokens for User: " + username);
+        System.out.println("From Browser: " + sessionToken + " | In Database: " + user.getSessionToken());
+
+        return !sessionToken.equals(user.getSessionToken());
     }
 
     @GetMapping
@@ -40,7 +45,9 @@ public class ProductController {
         if (isSessionInvalid(username, sessionToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session Invalid.");
         }
-        return ResponseEntity.ok(productRepository.findAll());
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noCache()) // Force browser to ask server every time
+                .body(productRepository.findAll());
     }
 
     @PostMapping("/create")
