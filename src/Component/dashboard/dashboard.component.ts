@@ -28,7 +28,22 @@ isAdmin: boolean = false;
       this.products = res as any[];
     });
   }
+// Inside DashboardComponent class
 
+// 1. Calculate Total Value
+get totalValue() {
+  return this.products.reduce((acc, p) => acc + (p.price * p.quantity), 0);
+}
+
+// 2. Count Low Stock Items
+get lowStockCount() {
+  return this.products.filter(p => p.quantity < 10 && p.quantity > 0).length;
+}
+
+// 3. Count Out of Stock
+get outOfStockCount() {
+  return this.products.filter(p => p.quantity === 0).length;
+}
   viewDetails(product: any) {
     this.router.navigate(['/dashboard-detail', product.id]);
   }

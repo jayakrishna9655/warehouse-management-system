@@ -5,7 +5,26 @@
         <button class="btn btn-primary" (click)="openCreateModal()">+ Add New Product</button>
         <input type="text" class="form-control w-25" placeholder="Search SKU..." [(ngModel)]="searchTerm">
     </div>
-
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card bg-primary text-white p-3">
+      <h5>Total Value</h5>
+      <h3>{{ totalValue | currency:'INR' }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card bg-warning text-dark p-3">
+      <h5>Low Stock Items</h5>
+      <h3>{{ lowStockCount }}</h3>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card bg-danger text-white p-3">
+      <h5>Out of Stock</h5>
+      <h3>{{ outOfStockCount }}</h3>
+    </div>
+  </div>
+</div>
     <table class="table table-bordered shadow-sm">
         <thead class="table-dark">
             <tr>
