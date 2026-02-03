@@ -1,30 +1,10 @@
 <div class="container mt-4">
     <h2>Warehouse Inventory</h2>
-    
+
     <div class="d-flex justify-content-between mb-3">
         <button class="btn btn-primary" (click)="openCreateModal()">+ Add New Product</button>
         <input type="text" class="form-control w-25" placeholder="Search SKU..." [(ngModel)]="searchTerm">
     </div>
-<div class="row mb-4">
-  <div class="col-md-4">
-    <div class="card bg-primary text-white p-3">
-      <h5>Total Value</h5>
-      <h3>{{ totalValue | currency:'INR' }}</h3>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card bg-warning text-dark p-3">
-      <h5>Low Stock Items</h5>
-      <h3>{{ lowStockCount }}</h3>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card bg-danger text-white p-3">
-      <h5>Out of Stock</h5>
-      <h3>{{ outOfStockCount }}</h3>
-    </div>
-  </div>
-</div>
     <table class="table table-bordered shadow-sm">
         <thead class="table-dark">
             <tr>
@@ -48,6 +28,39 @@
             </tr>
         </tbody>
     </table>
+    <div class="row mt-4 mb-4">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm h-100">
+                <h5 class="text-center">Inventory by Category</h5>
+                <div style="height: 250px; position: relative;">
+                    <canvas #categoryChart></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row h-100">
+                <div class="col-12 mb-2">
+                    <div class="card bg-primary text-white p-3 shadow-sm">
+                        <h6>Total Inventory Value</h6>
+                        <h3>{{ totalValue | currency:'INR' }}</h3>
+                    </div>
+                </div>
+                <div class="col-12 mb-2">
+                    <div class="card bg-warning text-dark p-3 shadow-sm">
+                        <h6>Low Stock Items (< 5)</h6>
+                                <h3>{{ lowStockCount }}</h3>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card bg-danger text-white p-3 shadow-sm">
+                        <h6>Out of Stock</h6>
+                        <h3>{{ outOfStockCount }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" *ngIf="selectedProduct">
