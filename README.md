@@ -68,15 +68,45 @@
 
 ## 7. Backend APIs Used
 
-* **GET** – Retrieve user and product data
-* **POST** – Create users and products
-* **DELETE** – Remove products (admin only)
+### RESTful API Design
+
+* **GET** – Fetch products and user profiles
+
+* **POST** – Create new users and products
+
+* **PUT** – Idempotent updates for existing product data
+
+* **DELETE** – Remove products (restricted to admin users)
+
+* **Strict Authorization**:
+
+  * The **DELETE** operation is strictly restricted to users with the **ADMIN** role through backend authorization logic.
 
 ## 8. Backend Security Configuration
 
 * The backend uses **Spring Security** with `SecurityFilterChain` to handle authentication and authorization requests from the frontend.
+* Implements **stateful session-based authentication** to ensure controlled and secure access.
+
+### Advanced Session Management
+
+* **Stateful Authentication**:
+
+  * Uses a unique **session token** stored in the database.
+  * Ensures that only **one active session per user** is allowed at any time.
+
+* **Token Expiration**:
+
+  * Implements a **30-minute sliding expiration window** (`tokenExpiry`).
+  * If the user is inactive beyond this period, the session is automatically invalidated on the server.
+
+* **Session Revocation Logic**:
+
+  * Every incoming request is validated against the database.
+  * The request is processed only if the session token is valid and not expired.
 
 ## 9. Global Exception Handling (Detailed Explanation)
+
+(Detailed Explanation)
 
 * The backend uses a **Global Exception Handler** to manage errors in a centralized and consistent way.
 * Instead of handling errors separately in each controller, this approach ensures that all runtime errors are processed in **one common place**.
@@ -84,38 +114,34 @@
 ### Why Global Exception Handling is Used
 
 * Improves **code cleanliness** by avoiding repeated try-catch blocks in controllers.
-* Provides **consistent error responses** to the frontend.
-* Helps the frontend easily display meaningful error messages to users.
-* Improves **debugging and maintenance**.
+* Provides **consistent and predictable error responses** to the frontend.
+* Helps the frontend display meaningful error messages.
+* Improves **debugging, monitoring, and long-term maintenance**.
 
-### How It Works
+### Enterprise-Grade Exception Handling
 
-* When any `RuntimeException` occurs in the backend (for example: invalid login, product not found, unauthorized delete request):
+* Uses a **centralized Controller Advice** to manage all application-level exceptions.
+* Replaces generic exception handling with **structured and semantic error responses**.
 
-  * The exception is automatically caught by the Global Exception Handler.
-  * A proper HTTP response is returned to the frontend with an error message.
+### Semantic HTTP Status Codes
 
-### Code Used
+* **401 Unauthorized** – Returned when the session is expired or invalid.
 
-```java
-@ExceptionHandler(RuntimeException.class)
-public ResponseEntity<String> handleRuntimeError(RuntimeException ex) {
-    return ResponseEntity.badRequest().body(ex.getMessage());
-}
-```
+* **403 Forbidden** – Returned when a non-admin user attempts a restricted action (such as delete).
 
-### Explanation of the Code
+* **404 Not Found** – Returned when a requested resource ID does not exist.
 
-* `@ExceptionHandler(RuntimeException.class)`:
+* **400 Bad Request** – Returned for validation failures or business rule violations.
 
-  * Catches all RuntimeExceptions across the application.
-* `handleRuntimeError(RuntimeException ex)`:
+* This approach ensures **secure, user-friendly, and enterprise-ready error handling** across the application.
+
+- `handleRuntimeError(RuntimeException ex)`:
 
   * Receives the exception details.
-* `ResponseEntity.badRequest()`:
+- `ResponseEntity.badRequest()`:
 
   * Returns HTTP 400 Bad Request.
-* `ex.getMessage()`:
+- `ex.getMessage()`:
 
   * Sends a readable error message to the Angular UI.
 
@@ -168,25 +194,10 @@ public ResponseEntity<String> handleRuntimeError(RuntimeException ex) {
 ### Frontend Setup
 
 * Navigate to the frontend directory.
-* Run `npm install`.
-* Run `ng serve`.
-* Access the app at `http://localhost:4200`.
-* `handleRuntimeError(RuntimeException ex)`:
+* Run `npm install` to install dependencies.
+* Run `ng serve` to start the Angular application.
+* Access the application at `http://localhost:4200`.
 
-  * This method receives the actual exception object.
-* `ResponseEntity.badRequest()`:
+---
 
-  * Sends an HTTP **400 Bad Request** status to the frontend.
-* `ex.getMessage()`:
-
-  * Returns a clear and readable error message, which is shown in the Angular UI.
-
-### Example Scenarios
-
-* Wrong username or password → returns a login error message.
-
-* Session invalid or expired → frontend interceptor shows an alert and blocks actions.
-
-* Admin-only delete attempted by a normal user → returns an authorization error.
-
-* This mechanism ensures **secure, user-friendly, and controlled error handling** across the entire application.
+**Note:** All runtime errors across the application are handled centrally using the Global Exception Handler described in Section 9. This ensures consistent, secure, and user-friendly error communication between the backend and frontend.
