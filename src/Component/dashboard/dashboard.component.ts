@@ -20,18 +20,52 @@ export class DashboardComponent {
   constructor(private http: HttpClient, private router: Router) { }
   @ViewChild('categoryChart') categoryChartCanvas!: ElementRef;
   chart: any;
-  ngOnInit() {
-    this.loadProducts();
-    const role = localStorage.getItem('userRole');
-    this.isAdmin = (role === 'ADMIN');
-    setTimeout(() => this.createChart(), 100);
-  }
+ngOnInit() {
+  this.loadProducts();
+  const role = localStorage.getItem('userRole');
+  this.isAdmin = (role === 'ADMIN');
+  
+  // Check session every 1 minute
+  setInterval(() => {
+    this.checkSessionTimeout();
+  }, 60000); 
+}
+checkSessionTimeout() {
+  const loginTime = Number(localStorage.getItem('login_time'));
+  const currentTime = new Date().getTime();
+  const thirtyMinutes = 30 * 60 * 1000;
 
-  loadProducts() {
-    this.http.get("http://localhost:8080/api/products").subscribe(res => {
-      this.products = res as any[];
-    });
+  if (currentTime - loginTime > thirtyMinutes) {
+    this.logout(); // Call your logout function
   }
+}
+logout() {
+  localStorage.clear();
+  this.router.navigate(['/login']);
+  // Optional: Call a backend logout API to set sessionToken to null
+}
+loadProducts() {
+  this.http.get("http://localhost:8080/api/products").subscribe({
+    next: (res) => {
+      this.products = res as any[];
+      // Trigger chart creation ONLY after products are loaded
+      this.createChart(); 
+    },
+    error: (err) => {
+      // If the backend returns 401 (Expired), the Interceptor will handle it,
+      // but we handle other errors here.
+      console.error("Error loading products", err);
+    }
+  });
+}
+// Add this inside your DashboardComponent class
+get filteredProducts() {
+  if (!this.searchTerm) return this.products;
+  return this.products.filter(p => 
+    p.sku.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+    p.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+  );
+}
   viewDetails(product: any) {
     this.router.navigate(['/dashboard-detail', product.id]);
   }
