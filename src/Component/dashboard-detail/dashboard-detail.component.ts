@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-detail',
-  imports: [CommonModule, RouterOutlet, FormsModule],
+  imports: [CommonModule,RouterOutlet,FormsModule],
   templateUrl: './dashboard-detail.component.html',
   styleUrl: './dashboard-detail.component.css'
 })
@@ -19,18 +19,18 @@ export class DashboardDetailComponent implements OnInit {
     quantity: 0
   };
   constructor(
-    private http: HttpClient,
-    private router: Router,
-    private route: ActivatedRoute
-  ) { }
+    private http: HttpClient, 
+    private router: Router, 
+    private route: ActivatedRoute 
+  ) {}
 
   ngOnInit() {
     // Correct way to get ID: use this.route (ActivatedRoute)
     const id = this.route.snapshot.paramMap.get('id');
-
+    
     if (id) {
       console.log("Fetching product with ID:", id);
-      this.http.get(`http://localhost:8080/api/products/${id}`)
+     this.http.get(`http://localhost:8080/api/products/${id}`)
         .subscribe({
           next: (res) => {
             this.newProduct = res;
@@ -40,40 +40,27 @@ export class DashboardDetailComponent implements OnInit {
     }
   }
 
-  updateProduct() {
-    // Clean URL - The Interceptor will automatically add the username and token!
-    const url = `http://localhost:8080/api/products/${this.newProduct.id}`;
+saveProduct() {
+  // CLEAN URL: No more ?username= or &sessionToken=
+  const url = this.newProduct.id 
+    ? `http://localhost:8080/api/products/update/${this.newProduct.id}` 
+    : `http://localhost:8080/api/products/create`;
 
-    this.http.put(url, this.newProduct).subscribe({
-      next: (res) => {
-        alert("Product updated successfully!");
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        console.error("Update failed", err);
+  // The Interceptor will handle the security parameters automatically!
+  this.http.post(url, this.newProduct).subscribe({
+    next: (res) => {
+      alert("Product Saved Successfully!");
+      this.router.navigate(['/dashboard']);
+    },
+    error: (err) => {
+      // The Interceptor handles 401 (Session Invalid) alerts globally now,
+      // so you don't even need to alert here if it's a 401.
+      if(err.status !== 401) {
+        alert("Error saving product.");
       }
-    });
-  }
-
-  saveProduct() {
-    // CLEAN URL: No more ?username= or &sessionToken=
-    const url = `http://localhost:8080/api/products/create`;
-
-    // The Interceptor will handle the security parameters automatically!
-    this.http.post(url, this.newProduct).subscribe({
-      next: (res) => {
-        alert("Product Saved Successfully!");
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err) => {
-        // The Interceptor handles 401 (Session Invalid) alerts globally now,
-        // so you don't even need to alert here if it's a 401.
-        if (err.status !== 401) {
-          alert("Error saving product.");
-        }
-      }
-    });
-  }
+    }
+  });
+}
 
   goBack() {
     this.router.navigate(['/dashboard']);

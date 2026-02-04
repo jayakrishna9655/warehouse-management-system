@@ -53,3 +53,9 @@ Backend/*.log
 Backend/.settings/
 Backend/.classpath
 Backend/.project
+
+*.log
+target/
+.settings/
+.classpath
+.project

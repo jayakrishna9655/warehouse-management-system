@@ -2,10 +2,6 @@ package com.example.warehouse.service;
 
 import com.example.warehouse.entity.User;
 import com.example.warehouse.repository.UserRepository;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,10 +43,6 @@ public class UserServiceImpl implements UserService {
         	// Generate a fresh token for this login session
             String newSessionToken = java.util.UUID.randomUUID().toString();
             user.setSessionToken(newSessionToken);
-         // Inside login method
-            user.setSessionToken(UUID.randomUUID().toString());
-            user.setTokenExpiry(LocalDateTime.now().plusMinutes(30)); // Sets a 30-minute window
-            userRepository.save(user);
             return userRepository.save(user);
         } else {
             throw new RuntimeException("Invalid Password!");

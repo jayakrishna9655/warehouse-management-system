@@ -34,8 +34,7 @@ export class LoginComponent {
         localStorage.setItem('userId', res.id.toString());
         localStorage.setItem('sessionToken', res.sessionToken); // Ensure this matches Java field
         localStorage.setItem('isLoggedIn', 'true');
-        const loginTime = new Date().getTime();
-        localStorage.setItem('login_time', loginTime.toString());
+
         alert("Login Successful!");
         console.log("user", this.user)
         console.log("res", res)

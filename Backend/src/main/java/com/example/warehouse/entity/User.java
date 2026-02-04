@@ -1,7 +1,5 @@
 package com.example.warehouse.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -17,24 +15,17 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable=true)
+    private String sessionToken;
     
  // Inside User.java
     @Column(nullable = false)
     private String role = "USER"; // Default every new user to 'USER'
-    @Column(nullable = true)
-    private String sessionToken;
-    
-    // New field for security expiration
-    private LocalDateTime tokenExpiry;
+
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-   
-    public void setSessionToken(String sessionToken) { this.sessionToken = sessionToken; }
-
-    public LocalDateTime getTokenExpiry() { return tokenExpiry; }
-    public void setTokenExpiry(LocalDateTime tokenExpiry) { this.tokenExpiry = tokenExpiry; }
-    
     // Getters and setters (or Lombok)
     public Long getId() {
         return id;
@@ -56,7 +47,9 @@ public class User {
         return sessionToken;
     }
 
- 
+    public void setSessionToken(String sessionToken) { 
+        this.sessionToken = sessionToken;
+    }
 
     public String getPassword() {
         return password;
