@@ -22,8 +22,9 @@
                     <span [class]="p.quantity < 5 ? 'text-danger fw-bold' : ''">{{p.quantity}}</span>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-info" (click)="viewDetails(p)">View</button>
-                    <button *ngIf="isAdmin" class="btn btn-danger" (click)="deleteProduct(p.id)">Delete</button>
+                    <button class="btn btn-sm btn-info m-1" (click)="viewDetails(p)">View</button>
+                    <button *ngIf="isAdmin" class="btn btn-danger m-1" (click)="deleteProduct(p.id)">Delete</button>
+                    <button *ngIf="isAdmin" class="btn btn-primary m-1" (click)="printProduct(p.id)">Print</button>
                 </td>
             </tr>
         </tbody>

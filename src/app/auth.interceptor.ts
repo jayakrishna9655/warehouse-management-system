@@ -7,7 +7,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   // SKIP interceptor for login/register routes
-  if (req.url.includes('/api/users/login') || req.url.includes('/api/users/register')) {
+  if (req.url.includes('/api/users/login') || req.url.includes('/api/users/register') || req.url.includes('/api/products/print/')) {
     return next(req);
   }
 

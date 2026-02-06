@@ -1,8 +1,13 @@
 package com.example.warehouse.controller;
 
 import com.example.warehouse.repository.UserRepository;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+
+import java.io.ByteArrayOutputStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +23,7 @@ import com.example.warehouse.entity.Product;
 import com.example.warehouse.entity.User;
 import com.example.warehouse.repository.ProductRepository;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 @RestController
 @RequestMapping("/api/products")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -112,4 +118,41 @@ public class ProductController {
             return ResponseEntity.ok(productRepository.save(product));
         }).orElse(ResponseEntity.notFound().build());
     }
+    
+    
+    @GetMapping("/print/{id}")
+    public ResponseEntity<?> exportInvoice(@PathVariable Long id) {
+        // 1. Fetch data
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // 2. Build HTML Template (Ensure all data is mapped here)
+        String htmlContent = "<html><body style='font-family: sans-serif;'>"
+            + "<h1>WAREHOUSE INVOICE</h1>"
+            + "<p>Product: " + product.getName() + "</p>"
+            + "<p>SKU: " + product.getSku() + "</p>"
+            + "<h2>Total Value: ₹" + (product.getPrice() * product.getQuantity()) + "</h2>"
+            + "</body></html>";
+
+        // 3. Populate the stream (Crucial Step)
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.useFastMode();
+            builder.withHtmlContent(htmlContent, null);
+            builder.toStream(out); // This writes the HTML into the stream as PDF data
+            builder.run();
+
+            byte[] pdfBytes = out.toByteArray();
+
+            // 4. Return with proper headers
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=invoice.pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(pdfBytes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error generating PDF: " + e.getMessage());
+        }
+    }
+    
+    
 }

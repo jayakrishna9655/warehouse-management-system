@@ -99,5 +99,26 @@ export class DashboardComponent {
   get outOfStockCount(): number {
     return this.products.filter(p => p.quantity === 0).length;
   }
+
+printProduct(id: number) {
+  this.http.get(`http://localhost:8080/api/products/print/${id}`, { 
+    responseType: 'blob' 
+  }).subscribe({
+    next: (data: Blob) => {
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Open in new tab
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.click();
+    },
+    error: (err) => alert("Error generating PDF")
+  });
+}
+
+
+
 }
 
